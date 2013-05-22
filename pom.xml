@@ -1,5 +1,6 @@
 <!--
- Copyright 2011 Niklas Schmidtmer
+ Copyright 2013 Oliver Ochs
+ Forked from a project copyright 2011 by Niklas Schmidtmer
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,13 +17,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.kabambo</groupId>
-    <artifactId>maven-optipng-plugin</artifactId>
+    <groupId>de.holisticon</groupId>
+    <artifactId>jpegtran-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
-    <name>maven-optipng-plugin Maven Plugin</name>
-    <url>https://github.com/hammerhead/maven-optipng-plugin</url>
+    <name>maven-jpegtran-plugin Maven Plugin</name>
+    <url>https://github.com/simonox/maven-jpegtran-plugin.git</url>
     <description>This maven plugin reduces the file size of images using OptiPNG.</description>
 
     <licenses>
@@ -34,20 +35,29 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/hammerhead/maven-optipng-plugin</url>
-        <connection>scm:git:git@github.com:hammerhead/maven-optipng-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:hammerhead/maven-optipng-plugin.git</developerConnection>
+        <url>https://github.com/simonox/maven-jpegtran-plugin.git</url>
+        <connection>scm:git:git@github.com:simonox/maven-jpegtran-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:simonox/maven-jpegtran-plugin.git</developerConnection>
     </scm>
 
     <issueManagement>
         <system>GitHub Issue Tracking</system>
-        <url>https://github.com/hammerhead/maven-optipng-plugin/issues</url>
+        <url>https://github.com/simonox/maven-jpegtran-plugin/issues</url>
     </issueManagement>
 
     <developers>
         <developer>
             <id>hammerhead</id>
             <name>Niklas Schmidtmer</name>
+            <roles>
+                <role>Owner</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>simonox</id>
+            <name>Oliver Ochs</name>
             <roles>
                 <role>Owner</role>
                 <role>Developer</role>

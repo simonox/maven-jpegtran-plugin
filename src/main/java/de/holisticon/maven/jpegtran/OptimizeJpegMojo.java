@@ -1,5 +1,6 @@
 /**
- * Copyright 2011 Niklas Schmidtmer
+ * Copyright 2013 Oliver Ochs
+ * based on a project copyright 2011 Niklas Schmidtmer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.kabambo.maven.optipng;
+package de.holisticon.maven.jpegtran;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -34,21 +35,21 @@ import org.apache.maven.plugin.logging.Log;
  * @goal optimize
  * @phase compile
  */
-public class OptimizePngMojo extends AbstractMojo {
+public class OptimizeJpegMojo extends AbstractMojo {
     /**
      * File extension of PNG images.
      */
-    private static final String PNG_SUFFIX = ".png";
+    private static final String JPG_SUFFIX = ".jpg";
 
     /**
-     * Optipng executable.
+     * jpegtran executable.
      */
-    private static final String OPTIPNG_EXE = "optipng";
+    private static final String JPEGTRAN_EXE = "jpegtran";
 
     /**
-     * Optipng parameter specifying compression level.
+     * jpegtran parameter specifying compression level.
      */
-    private static final String OPTIPNG_COMPRESSION_LEVEL_PARAM = "-o";
+    private static final String JPEGTRAN_COMPRESSION_LEVEL_PARAM = "-o";
 
     /**
      * Timeout in seconds for processes to terminate.
@@ -56,12 +57,12 @@ public class OptimizePngMojo extends AbstractMojo {
     private static final int POOL_TIMEOUT = 10;
 
     /**
-     * Lower bound for optimization level passed to optipng.
+     * Lower bound for optimization level passed to jpegtran.
      */
     private static final int LEVEL_LOWER_BOUND = 0;
 
     /**
-     * Upper bound for optimization level passed to optipng.
+     * Upper bound for optimization level passed to jpegtran.
      */
     private static final int LEVEL_UPPER_BOUND = 7;
 
@@ -88,17 +89,17 @@ public class OptimizePngMojo extends AbstractMojo {
     /**
      * Creates a new instance of this plugin.
      */
-    public OptimizePngMojo() {
+    public OptimizeJpegMojo() {
         pool = Executors.newCachedThreadPool();
     }
 
     /**
      * A filename filter for PNG files.
      */
-    private static class PngFilenameFilter implements FilenameFilter {
+    private static class JpegFilenameFilter implements FilenameFilter {
         @Override
         public boolean accept(final File dir, final String name) {
-            return name.endsWith(PNG_SUFFIX);
+            return name.endsWith(JPG_SUFFIX);
         }
     }
 
@@ -109,8 +110,8 @@ public class OptimizePngMojo extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException {
-        if (!verifyOptipngInstallation()) {
-            throw new MojoExecutionException("Could not find optipng on "
+        if (!verifyjpegtranInstallation()) {
+            throw new MojoExecutionException("Could not find jpegtran on "
                 + "this system");
         }
 
@@ -133,7 +134,7 @@ public class OptimizePngMojo extends AbstractMojo {
                     "The path %s is not a directory.", directory));
             }
 
-            File[] containedImages = d.listFiles(new PngFilenameFilter());
+            File[] containedImages = d.listFiles(new JpegFilenameFilter());
 
             numberImages += containedImages.length;
             for (File image : containedImages) {
@@ -211,7 +212,7 @@ public class OptimizePngMojo extends AbstractMojo {
     }
 
     /**
-     * Builds a optipng call and spawns a new process.
+     * Builds a jpegtran call and spawns a new process.
      *
      * @param image image to optimize
      * @return spawned process
@@ -219,10 +220,10 @@ public class OptimizePngMojo extends AbstractMojo {
      */
     private Process startProcess(final File image) throws IOException {
         final StringBuilder args = new StringBuilder();
-        args.append(OPTIPNG_COMPRESSION_LEVEL_PARAM).append(" ")
+        args.append(JPEGTRAN_COMPRESSION_LEVEL_PARAM).append(" ")
             .append(String.valueOf(level)).append(" ")
             .append(image.getPath());
-        return new ProcessBuilder(OPTIPNG_EXE, args.toString()).start();
+        return new ProcessBuilder(JPEGTRAN_EXE, args.toString()).start();
     }
 
     /**
@@ -237,15 +238,15 @@ public class OptimizePngMojo extends AbstractMojo {
     }
 
     /**
-     * Verifies whether optipng is installed.
+     * Verifies whether jpegtran is installed.
      *
      * @return <code>true</code> if installed, <code>false</code> otherwise
      * @throws MojoExecutionException in case building the process failed
      */
-    private static boolean verifyOptipngInstallation() throws
+    private static boolean verifyjpegtranInstallation() throws
             MojoExecutionException {
         List<String> args = new LinkedList<String>();
-        args.add(OPTIPNG_EXE);
+        args.add(JPEGTRAN_EXE);
 
         Process p;
         try {
@@ -253,10 +254,10 @@ public class OptimizePngMojo extends AbstractMojo {
             p.waitFor();
         } catch (IOException e) {
             throw new MojoExecutionException(
-                "Failed to verify optipng installation", e);
+                "Failed to verify jpegtran installation", e);
         } catch (InterruptedException e) {
             throw new MojoExecutionException(
-                "Failed to verify optipng installation", e);
+                "Failed to verify jpegtran installation", e);
         }
 
         return p.exitValue() == 0;
