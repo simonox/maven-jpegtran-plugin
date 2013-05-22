@@ -30,14 +30,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
- * Goal which optimizes PNG images.
+ * Goal which optimizes JPEG images.
  *
  * @goal optimize
  * @phase compile
  */
 public class OptimizeJpegMojo extends AbstractMojo {
     /**
-     * File extension of PNG images.
+     * File extension of JPEG images.
      */
     private static final String JPG_SUFFIX = ".jpg";
 
@@ -46,10 +46,6 @@ public class OptimizeJpegMojo extends AbstractMojo {
      */
     private static final String JPEGTRAN_EXE = "jpegtran";
 
-    /**
-     * jpegtran parameter specifying compression level.
-     */
-    private static final String JPEGTRAN_COMPRESSION_LEVEL_PARAM = "-o";
 
     /**
      * Timeout in seconds for processes to terminate.
@@ -57,22 +53,13 @@ public class OptimizeJpegMojo extends AbstractMojo {
     private static final int POOL_TIMEOUT = 10;
 
     /**
-     * Lower bound for optimization level passed to jpegtran.
-     */
-    private static final int LEVEL_LOWER_BOUND = 0;
-
-    /**
-     * Upper bound for optimization level passed to jpegtran.
-     */
-    private static final int LEVEL_UPPER_BOUND = 7;
-
-    /**
      * List of directories to consider.
      *
      * @parameter
      * @required
      */
-    private List<String> pngDirectories;
+    private List<String> jpegDirectories;
+ 
 
     /**
      * Specifies the intensity of compression.
@@ -94,7 +81,7 @@ public class OptimizeJpegMojo extends AbstractMojo {
     }
 
     /**
-     * A filename filter for PNG files.
+     * A filename filter for JPEG files.
      */
     private static class JpegFilenameFilter implements FilenameFilter {
         @Override
@@ -110,19 +97,14 @@ public class OptimizeJpegMojo extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException {
-        if (!verifyjpegtranInstallation()) {
-            throw new MojoExecutionException("Could not find jpegtran on "
-                + "this system");
-        }
+    	// FIXME
+    	//        if (!verifyJpegtranInstallation()) {
+    	//        	throw new MojoExecutionException("Could not find jpegtran on this system");
+    	//        }
 
-        if (!verifyLevel()) {
-            throw new MojoExecutionException(String.format(
-                "Invalid level. Must be >= %d and <= %d", LEVEL_LOWER_BOUND,
-                LEVEL_UPPER_BOUND));
-        }
-
+  
         int numberImages = 0;
-        for (final String directory : pngDirectories) {
+        for (final String directory : jpegDirectories) {
             File d = new File(directory);
             if (!d.exists()) {
                 throw new MojoExecutionException(String.format(
@@ -214,16 +196,21 @@ public class OptimizeJpegMojo extends AbstractMojo {
     /**
      * Builds a jpegtran call and spawns a new process.
      *
+     * jpegtran -optimize -perfect "$jpg" 
      * @param image image to optimize
      * @return spawned process
      * @throws IOException in case building the process failed
      */
     private Process startProcess(final File image) throws IOException {
         final StringBuilder args = new StringBuilder();
-        args.append(JPEGTRAN_COMPRESSION_LEVEL_PARAM).append(" ")
-            .append(String.valueOf(level)).append(" ")
-            .append(image.getPath());
-        return new ProcessBuilder(JPEGTRAN_EXE, args.toString()).start();
+        args.append(JPEGTRAN_EXE).append(" ")
+         	.append("-optimize ")
+        	.append("-copy ").append("none ")
+        	.append("-progressive ")
+        	.append("\'").append(image.getPath()).append("\'").append(" ")
+            .append("> ").append("\'").append(image.getPath()).append("-optimized.jpg").append("\'")
+            .append("&& mv ").append("\'").append(image.getPath()).append("-optimized.jpg").append("\'").append(" ").append("\'").append(image.getPath()).append("\'");
+        return new ProcessBuilder("/bin/sh", "-c ", args.toString()).start();
     }
 
     /**
@@ -243,11 +230,11 @@ public class OptimizeJpegMojo extends AbstractMojo {
      * @return <code>true</code> if installed, <code>false</code> otherwise
      * @throws MojoExecutionException in case building the process failed
      */
-    private static boolean verifyjpegtranInstallation() throws
+    private static boolean verifyJpegtranInstallation() throws
             MojoExecutionException {
         List<String> args = new LinkedList<String>();
         args.add(JPEGTRAN_EXE);
-
+        args.add(" --help");
         Process p;
         try {
             p = new ProcessBuilder(args).start();
@@ -261,15 +248,6 @@ public class OptimizeJpegMojo extends AbstractMojo {
         }
 
         return p.exitValue() == 0;
-    }
-
-    /**
-     * Verifies whether the provided level is within legal bounds.
-     *
-     * @return <code>true</code> if legal, <code>false</code> otherwise
-     */
-    private boolean verifyLevel() {
-        return level >= LEVEL_LOWER_BOUND && level <= LEVEL_UPPER_BOUND;
     }
 }
 

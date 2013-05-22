@@ -24,7 +24,7 @@
 
     <name>maven-jpegtran-plugin Maven Plugin</name>
     <url>https://github.com/simonox/maven-jpegtran-plugin.git</url>
-    <description>This maven plugin reduces the file size of images using OptiPNG.</description>
+    <description>This maven plugin reduces the file size of images using JPEGTran.</description>
 
     <licenses>
         <license>
