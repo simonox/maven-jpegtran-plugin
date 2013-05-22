@@ -17,23 +17,22 @@ Usage
 The following snippet demonstates a sample usage of this plugin.
 
 ```xml
-	<plugin>
-		<groupId>de.holisticon</groupId>
-		<artifactId>jpegtran-maven-plugin</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<!-- Execute optimize goal of this plugin by default -->
-		<executions>
-			<execution>
-				<goals>
-					<goal>optimize</goal>
-				</goals>
-			</execution>
-		</executions>
-		<configuration>
-			<!-- You can provide a list of directories containing images to be optimized here -->
-			<jpegDirectories>
-				<jpegDirectory>${basedir}/src/main/webapp/jpeg</jpegDirectory>
-			</jpegDirectories>
-		</configuration>
-	</plugin>
+		<plugin>
+					        <groupId>de.holisticon</groupId>
+					        <artifactId>jpegtran-maven-plugin</artifactId>
+					        <version>1.0-SNAPSHOT</version>
+					       	<executions>
+					            <execution>
+					                <goals>
+					                    <goal>optimize</goal>
+					                </goals>
+					            </execution>
+					        </executions>
+					        <configuration>
+					            <jpegDirectories>
+					                <jpegDirectory>${basedir}/src/main/webapp/img/JustinMezzel</jpegDirectory>
+					                <jpegDirectory>${basedir}/src/main/webapp/img/OliverOchs</jpegDirectory>
+					            </jpegDirectories>
+					        </configuration>
+					</plugin>
 ```
